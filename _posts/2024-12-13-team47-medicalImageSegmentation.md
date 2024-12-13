@@ -547,7 +547,7 @@ _Medical Image Computing and Computer-Assisted Intervention (MICCAI)_.
 [Zhou, Z., Siddiquee, M.R., Tajbakhsh, N., & Liang, J. (2020). "UNet++: Redesigning Skip Connections to Exploit Multiscale Features in Image Segmentation"](https://doi.org/10.1109/TMI.2019.2959609)
 _IEEE Transactions on Medical Imaging_.
 
-[4]
+[3]
 [Srinivasan, S., Durairaju, K., Deeba, K., & et al. (2024). "Multimodal Biomedical Image Segmentation using Multi-Dimensional U-Convolutional Neural Network"](https://doi.org/10.1186/s12880-024-01197-5)
 _BMC Medical Imaging_.
 
