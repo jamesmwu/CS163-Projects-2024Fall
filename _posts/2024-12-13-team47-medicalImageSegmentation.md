@@ -81,7 +81,8 @@ developing new therapeutic strategies.
   - **Machine Learning**: Preparing datasets for training and evaluating AI
     models.
   - **Disease Analysis**: Understanding the progression of diseases such as
-    cancer or neurodegenerative disorders. **Monitoring Disease Progression**:
+    cancer or neurodegenerative disorders. 
+  - **Monitoring Disease Progression**:
     In oncology, segmentation helps track changes in tumor size or shape across
     multiple scans. For instance, sequential MRI scans can be segmented to
     visualize and quantify how a tumor responds to chemotherapy.
@@ -134,11 +135,18 @@ context and fine-grained details:
 
 #### Visualization
 
-The U-Net architecture can be visualized as a U-shaped design that combines feature extraction in the encoder path with upsampling in the decoder path. Below is a diagram illustrating the architecture:
+The U-Net architecture can be visualized as a U-shaped design that combines
+feature extraction in the encoder path with upsampling in the decoder path.
+Below is a diagram illustrating the architecture:
 
-![Diagram of U-Net architecture.](../assets/images/team47/u-net-architecture.png)
+![Diagram of U-Net architecture.](/CS163-Projects-2024Fall/assets/images/team47/u-net-architecture.png)
 
-**Fig. 1.** Illustration of the U-Net architecture with its characteristic encoder-decoder structure. The encoder extracts features through convolution and pooling, while the decoder restores spatial dimensions using up-convolutions and skip connections to produce the segmentation map. Dimensions of feature maps and key operations are annotated for clarity. Adapted from Ronneberger et al., 2015 [1]
+**Fig. 1.** Illustration of the U-Net architecture with its characteristic
+encoder-decoder structure. The encoder extracts features through convolution and
+pooling, while the decoder restores spatial dimensions using up-convolutions and
+skip connections to produce the segmentation map. Dimensions of feature maps and
+key operations are annotated for clarity. Adapted from Ronneberger et al., 2015
+[1]
 
 #### Training Process
 
@@ -271,9 +279,13 @@ particularly in complex medical scenarios [2].
 
 The architecture of U-Net++ is illustrated in the following figure:
 
-![Diagram of U-Net architecture.](../assets/images/team47/u-net++-architecture.png)
+![Diagram of U-Net architecture.](/CS163-Projects-2024Fall/assets/images/team47/u-net++-architecture.png)
 
-**Fig. 2.** Illustration of the U-Net++ architecture with its encoder-decoder structure connected through nested dense convolutional blocks. These redesigned skip pathways reduce the semantic gap between the feature maps of the encoder and decoder, allowing for more effective feature fusion. Adapted from Zhou et al., 2020 [2].
+**Fig. 2.** Illustration of the U-Net++ architecture with its encoder-decoder
+structure connected through nested dense convolutional blocks. These redesigned
+skip pathways reduce the semantic gap between the feature maps of the encoder
+and decoder, allowing for more effective feature fusion. Adapted from Zhou et
+al., 2020 [2].
 
 ### Multi-Dimensional U-CNN
 
@@ -289,9 +301,12 @@ by:
 
 The architecture of MDU-CNN is illustrated below:
 
-![Diagram of U-Net architecture.](../assets/images/team47/mdu-cnn-architecture.png)
+![Diagram of U-Net architecture.](/CS163-Projects-2024Fall/assets/images/team47/mdu-cnn-architecture.png)
 
-**Fig. 3.** The architecture of MDU-CNN integrates multi-dimensional blocks with horizontal and vertical refinement mechanisms. This design enhances feature alignment and extraction, resulting in improved segmentation accuracy. Adapted from Srinivasan et al., 2024 [3].
+**Fig. 3.** The architecture of MDU-CNN integrates multi-dimensional blocks with
+horizontal and vertical refinement mechanisms. This design enhances feature
+alignment and extraction, resulting in improved segmentation accuracy. Adapted
+from Srinivasan et al., 2024 [3].
 
 #### Performance Evaluation
 
@@ -505,10 +520,10 @@ adjustments, making the framework highly versatile and efficient.
 
 Preprocessing and Training Pipeline: The framework defines a comprehensive
 pipeline that includes cropping, resampling to a median voxel spacing, intensity
-normalization (For CT images: clip to [0.5, 99.5] percentile range and z-score 
-normalization; For MRI: z-score normalization after nonzero mean computation), 
-and extensive data augmentation techniques like elastic deformations and gamma 
-correction. These steps are dynamically adapted for each dataset to maximize 
+normalization (For CT images: clip to [0.5, 99.5] percentile range and z-score
+normalization; For MRI: z-score normalization after nonzero mean computation),
+and extensive data augmentation techniques like elastic deformations and gamma
+correction. These steps are dynamically adapted for each dataset to maximize
 segmentation performance [5].
 
 Empirical Evaluation: nnU-Net was evaluated in the Medical Segmentation
@@ -528,42 +543,40 @@ medical image segmentation, capable of adapting to new challenges with minimal
 human intervention.
 
 **Other Specification and Optimizations**
-1. **Patch Size Computation**:
-   ps = min(dataset_median_shape * 0.25, 
-            max_img_size_memory_constraint,
-            preprocessed_img_size)
 
-2. **Network Depth Calculation**:
-   max_num_pooling = floor(log2(min(patch_size)))
-   
+1. **Patch Size Computation**: ps = min(dataset_median_shape \* 0.25,
+   max_img_size_memory_constraint, preprocessed_img_size)
+
+2. **Network Depth Calculation**: max_num_pooling = floor(log2(min(patch_size)))
 3. **Training Protocol**:
    - SGD with Nesterov momentum (0.99)
    - Initial LR: 0.01 with poly learning rate policy
-   - Batch size determined by:
-     max_batch_size = floor(available_gpu_memory / 
-                           (patch_size * channels * features_per_voxel))
+   - Batch size determined by: max*batch_size = floor(available_gpu_memory /
+     (patch_size * channels \_ features_per_voxel))
 
 ### Evaluation Metrics
 
-Medical image segmentation models are typically evaluated using several key metrics
-that assess different aspects of segmentation accuracy. The Dice Similarity 
-Coefficient (DSC) measures the overlap between predicted 
-and ground truth segmentations. The Intersection over Union (IoU), or Jaccard Index, 
-provides another measure of overlap that is particularly useful for irregular shapes. 
+Medical image segmentation models are typically evaluated using several key
+metrics that assess different aspects of segmentation accuracy. The Dice
+Similarity Coefficient (DSC) measures the overlap between predicted and ground
+truth segmentations. The Intersection over Union (IoU), or Jaccard Index,
+provides another measure of overlap that is particularly useful for irregular
+shapes.
 
 ### Challenges and Limitations
 
-Despite significant advances, medical image segmentation still faces several key 
-challenges. Data scarcity remains a primary constraint, as acquiring large datasets of 
-professionally annotated medical images is both time-consuming and expensive. Class 
-imbalance is another significant challenge, particularly in pathology detection where 
-the region of interest may comprise only a small portion of the image. Image quality 
-variations, including artifacts, noise, and differences in acquisition protocols across 
-medical facilities, can impact segmentation accuracy. Moreover, the interpretability 
-of deep learning models remains a concern in medical applications where understanding 
-the reasoning behind segmentation decisions is crucial for clinical trust and adoption. 
-There are also computational challenges, as 3D medical images require significant 
-processing power and memory, potentially limiting real-time applications in 
+Despite significant advances, medical image segmentation still faces several key
+challenges. Data scarcity remains a primary constraint, as acquiring large
+datasets of professionally annotated medical images is both time-consuming and
+expensive. Class imbalance is another significant challenge, particularly in
+pathology detection where the region of interest may comprise only a small
+portion of the image. Image quality variations, including artifacts, noise, and
+differences in acquisition protocols across medical facilities, can impact
+segmentation accuracy. Moreover, the interpretability of deep learning models
+remains a concern in medical applications where understanding the reasoning
+behind segmentation decisions is crucial for clinical trust and adoption. There
+are also computational challenges, as 3D medical images require significant
+processing power and memory, potentially limiting real-time applications in
 resource-constrained settings.
 
 ## Conclusion
@@ -575,19 +588,19 @@ contributing key innovations: from U-Net's foundational encoder-decoder design,
 to U-Net++'s refined nested skip connections, to nnU-Net's automated,
 dataset-agnostic approach.Despite challenges related to dataset variability and
 computational resources, these models represent significant advancements in
-medical imaging. Looking ahead, several promising directions are emerging in 
-medical image segmentation. Transformer-based architectures are being integrated 
-with CNN-based models, combining the spatial awareness of CNNs with transformers' 
-ability to capture long-range dependencies. Federated learning approaches are 
-addressing data privacy concerns by enabling model training across multiple 
-institutions without sharing sensitive medical data. Additionally, self-supervised
-learning techniques are helping to overcome the limitation of scarce labeled 
-medical data by leveraging large amounts of unlabeled images for pre-training. 
-These developments, coupled with advances in hardware acceleration and edge 
-computing, suggest a future where highly accurate, real-time medical image 
-segmentation becomes increasingly accessible in clinical settings.Continued
-research and innovation will further improve segmentation accuracy and 
-accessibility.
+medical imaging. Looking ahead, several promising directions are emerging in
+medical image segmentation. Transformer-based architectures are being integrated
+with CNN-based models, combining the spatial awareness of CNNs with
+transformers' ability to capture long-range dependencies. Federated learning
+approaches are addressing data privacy concerns by enabling model training
+across multiple institutions without sharing sensitive medical data.
+Additionally, self-supervised learning techniques are helping to overcome the
+limitation of scarce labeled medical data by leveraging large amounts of
+unlabeled images for pre-training. These developments, coupled with advances in
+hardware acceleration and edge computing, suggest a future where highly
+accurate, real-time medical image segmentation becomes increasingly accessible
+in clinical settings.Continued research and innovation will further improve
+segmentation accuracy and accessibility.
 
 ## References
 
