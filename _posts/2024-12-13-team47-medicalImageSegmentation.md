@@ -505,9 +505,11 @@ adjustments, making the framework highly versatile and efficient.
 
 Preprocessing and Training Pipeline: The framework defines a comprehensive
 pipeline that includes cropping, resampling to a median voxel spacing, intensity
-normalization, and extensive data augmentation techniques like elastic
-deformations and gamma correction. These steps are dynamically adapted for each
-dataset to maximize segmentation performance [5].
+normalization (For CT images: clip to [0.5, 99.5] percentile range and z-score 
+normalization; For MRI: z-score normalization after nonzero mean computation), 
+and extensive data augmentation techniques like elastic deformations and gamma 
+correction. These steps are dynamically adapted for each dataset to maximize 
+segmentation performance [5].
 
 Empirical Evaluation: nnU-Net was evaluated in the Medical Segmentation
 Decathlon, a challenge comprising ten distinct medical imaging tasks. It
@@ -524,6 +526,22 @@ enforcing single connected components, further refine the segmentation results
 This self-configuring approach positions nnU-Net as a powerful benchmark for
 medical image segmentation, capable of adapting to new challenges with minimal
 human intervention.
+
+**Other Specification and Optimizations**
+1. **Patch Size Computation**:
+   ps = min(dataset_median_shape * 0.25, 
+            max_img_size_memory_constraint,
+            preprocessed_img_size)
+
+2. **Network Depth Calculation**:
+   max_num_pooling = floor(log2(min(patch_size)))
+   
+3. **Training Protocol**:
+   - SGD with Nesterov momentum (0.99)
+   - Initial LR: 0.01 with poly learning rate policy
+   - Batch size determined by:
+     max_batch_size = floor(available_gpu_memory / 
+                           (patch_size * channels * features_per_voxel))
 
 ### Evaluation Metrics
 
