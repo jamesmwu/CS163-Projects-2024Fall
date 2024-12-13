@@ -16,8 +16,8 @@ date: 2024-12-11
 
 {: class="table-of-content"}
 
-- TOC  
-  {:toc}
+* TOC  
+{:toc}
 
 ## Introduction
 
