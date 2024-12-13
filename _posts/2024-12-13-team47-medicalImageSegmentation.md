@@ -132,6 +132,14 @@ context and fine-grained details:
      refines the segmentation mask, ensuring that fine-grained details and
      spatial context are preserved.
 
+#### Visualization
+
+The U-Net architecture can be visualized as a U-shaped design that combines feature extraction in the encoder path with upsampling in the decoder path. Below is a diagram illustrating the architecture:
+
+![Diagram of U-Net architecture.](../assets/images/team47/u-net-architecture.png)
+
+**Fig. 1.** Illustration of the U-Net architecture with its characteristic encoder-decoder structure. The encoder extracts features through convolution and pooling, while the decoder restores spatial dimensions using up-convolutions and skip connections to produce the segmentation map. Dimensions of feature maps and key operations are annotated for clarity. Adapted from Ronneberger et al., 2015 [1]
+
 #### Training Process
 
 1. **Data Preparation**: Labeled images are preprocessed through resizing,
@@ -155,7 +163,7 @@ context and fine-grained details:
 
 ### Implementation
 
-```
+```python
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -259,6 +267,14 @@ particularly in complex medical scenarios [2].
 - **Modular Design**: Easily integrates with other deep learning techniques for
   enhanced performance.
 
+#### Visualization
+
+The architecture of U-Net++ is illustrated in the following figure:
+
+![Diagram of U-Net architecture.](../assets/images/team47/u-net++-architecture.png)
+
+**Fig. 2.** Illustration of the U-Net++ architecture with its encoder-decoder structure connected through nested dense convolutional blocks. These redesigned skip pathways reduce the semantic gap between the feature maps of the encoder and decoder, allowing for more effective feature fusion. Adapted from Zhou et al., 2020 [2].
+
 ### Multi-Dimensional U-CNN
 
 The **Multi-Dimensional U-Convolutional Neural Network** further refines U-Net++
@@ -269,13 +285,23 @@ by:
 - **Vertical Alignment**: Feeding feature maps from each layer into the
   horizontal convolution path for enhanced feature extraction.
 
+#### Visualization
+
+The architecture of MDU-CNN is illustrated below:
+
+![Diagram of U-Net architecture.](../assets/images/team47/mdu-cnn-architecture.png)
+
+**Fig. 3.** The architecture of MDU-CNN integrates multi-dimensional blocks with horizontal and vertical refinement mechanisms. This design enhances feature alignment and extraction, resulting in improved segmentation accuracy. Adapted from Srinivasan et al., 2024 [3].
+
+#### Performance Evaluation
+
 When tested on 5 distinct datasets, each with its own unique challenges, MDU-CNN
 had a better performance of 1.32%, 5.19%, 4.50%, 10.23%, and 0.87%
 respectively-- a notable improvement upon traditional U-Net architecture [4].
 
 ### Implementation
 
-```
+```python
 import torch
 import torch.nn as nn
 
@@ -367,7 +393,7 @@ segmentation [2].
 ## nnU-Net
 
 **nnU-Net** ("no-new-U-Net") automates the process of adapting U-Net to new
-datasets, providing a robust and standardized pipeline [3]. By examining
+datasets, providing a robust and standardized pipeline [5]. By examining
 properties of the input dataset and adjusting hyperparameters and architectural
 details accordingly, nnU-Net streamlines preprocessing, architecture selection,
 training, and post-processing steps. Compared to earlier architectures, it
@@ -402,7 +428,7 @@ without manual tuning.
 
 ### Implementation
 
-```
+```python
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -464,7 +490,7 @@ class nnUNet(nn.Module):
 
 nnU-Net was introduced by Isensee et al., 2018 as a self-adapting framework
 designed to overcome the limitations of manually configuring U-Net architectures
-for different medical imaging tasks [3]. The key innovation of nnU-Net lies in
+for different medical imaging tasks [5]. The key innovation of nnU-Net lies in
 its ability to automatically adapt network architecture, preprocessing, and
 training pipelines based on the characteristics of the input dataset. This
 automation allows nnU-Net to deliver state-of-the-art performance across a wide
@@ -474,26 +500,26 @@ hyperparameter tuning.
 Key Contributions Automated Configuration: nnU-Net evaluates the dataset's image
 geometry and automatically selects the optimal U-Net variant (2D U-Net, 3D
 U-Net, or cascaded U-Net) along with appropriate patch sizes, pooling
-operations, and batch sizes [3]. This eliminates the need for trial-and-error
+operations, and batch sizes [5]. This eliminates the need for trial-and-error
 adjustments, making the framework highly versatile and efficient.
 
 Preprocessing and Training Pipeline: The framework defines a comprehensive
 pipeline that includes cropping, resampling to a median voxel spacing, intensity
 normalization, and extensive data augmentation techniques like elastic
 deformations and gamma correction. These steps are dynamically adapted for each
-dataset to maximize segmentation performance [3].
+dataset to maximize segmentation performance [5].
 
 Empirical Evaluation: nnU-Net was evaluated in the Medical Segmentation
 Decathlon, a challenge comprising ten distinct medical imaging tasks. It
 achieved top rankings across multiple datasets, demonstrating its robustness and
 generalizability. Notably, nnU-Net outperformed manually optimized architectures
 by focusing on effective preprocessing, training, and inference strategies
-rather than introducing novel architectural changes [3].
+rather than introducing novel architectural changes [5].
 
 Ensembling and Post-Processing: To enhance robustness, nnU-Net employs model
 ensembling and test-time augmentations. Post-processing techniques, such as
 enforcing single connected components, further refine the segmentation results
-[3].
+[5].
 
 This self-configuring approach positions nnU-Net as a powerful benchmark for
 medical image segmentation, capable of adapting to new challenges with minimal
@@ -521,10 +547,14 @@ _Medical Image Computing and Computer-Assisted Intervention (MICCAI)_.
 [Zhou, Z., Siddiquee, M.R., Tajbakhsh, N., & Liang, J. (2020). "UNet++: Redesigning Skip Connections to Exploit Multiscale Features in Image Segmentation"](https://doi.org/10.1109/TMI.2019.2959609)
 _IEEE Transactions on Medical Imaging_.
 
-[3]
-[Isensee, F., Petersen, J., Klein, A., Zimmerer, D., Jaeger, P.F., Kohl, S.A.A., Wasserthal, J., Köhler, G., Norajitra, T., Wirkert, S., & Maier-Hein, K.H. (2018). "nnU-Net: Self-Adapting Framework for U-Net-Based Medical Image Segmentation."](https://arxiv.org/abs/1809.10486)
-arXiv.
+[4]
+[Srinivasan, S., Durairaju, K., Deeba, K., & et al. (2024). "Multimodal Biomedical Image Segmentation using Multi-Dimensional U-Convolutional Neural Network"](https://doi.org/10.1186/s12880-024-01197-5)
+_BMC Medical Imaging_.
 
 [4]
 [Srinivasan, S., et al. (2024). "A Comparison of Medical Image Segmentation Techniques."](https://doi.org/10.1186/s12880-024-01197-5)
 _BMC Medical Imaging_.
+
+[5]
+[Isensee, F., Petersen, J., Klein, A., Zimmerer, D., Jaeger, P.F., Kohl, S.A.A., Wasserthal, J., Köhler, G., Norajitra, T., Wirkert, S., & Maier-Hein, K.H. (2018). "nnU-Net: Self-Adapting Framework for U-Net-Based Medical Image Segmentation."](https://arxiv.org/abs/1809.10486)
+_arXiv_.
