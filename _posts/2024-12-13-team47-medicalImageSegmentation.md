@@ -525,6 +525,29 @@ This self-configuring approach positions nnU-Net as a powerful benchmark for
 medical image segmentation, capable of adapting to new challenges with minimal
 human intervention.
 
+### Evaluation Metrics
+
+Medical image segmentation models are typically evaluated using several key metrics
+that assess different aspects of segmentation accuracy. The Dice Similarity 
+Coefficient (DSC) measures the overlap between predicted 
+and ground truth segmentations. The Intersection over Union (IoU), or Jaccard Index, 
+provides another measure of overlap that is particularly useful for irregular shapes. 
+
+### Challenges and Limitations
+
+Despite significant advances, medical image segmentation still faces several key 
+challenges. Data scarcity remains a primary constraint, as acquiring large datasets of 
+professionally annotated medical images is both time-consuming and expensive. Class 
+imbalance is another significant challenge, particularly in pathology detection where 
+the region of interest may comprise only a small portion of the image. Image quality 
+variations, including artifacts, noise, and differences in acquisition protocols across 
+medical facilities, can impact segmentation accuracy. Moreover, the interpretability 
+of deep learning models remains a concern in medical applications where understanding 
+the reasoning behind segmentation decisions is crucial for clinical trust and adoption. 
+There are also computational challenges, as 3D medical images require significant 
+processing power and memory, potentially limiting real-time applications in 
+resource-constrained settings.
+
 ## Conclusion
 
 Deep learning-based medical image segmentation models like **U-Net**,
@@ -534,8 +557,19 @@ contributing key innovations: from U-Net's foundational encoder-decoder design,
 to U-Net++'s refined nested skip connections, to nnU-Net's automated,
 dataset-agnostic approach.Despite challenges related to dataset variability and
 computational resources, these models represent significant advancements in
-medical imaging. Continued research and innovation will further improve
-segmentation accuracy and accessibility.
+medical imaging. Looking ahead, several promising directions are emerging in 
+medical image segmentation. Transformer-based architectures are being integrated 
+with CNN-based models, combining the spatial awareness of CNNs with transformers' 
+ability to capture long-range dependencies. Federated learning approaches are 
+addressing data privacy concerns by enabling model training across multiple 
+institutions without sharing sensitive medical data. Additionally, self-supervised
+learning techniques are helping to overcome the limitation of scarce labeled 
+medical data by leveraging large amounts of unlabeled images for pre-training. 
+These developments, coupled with advances in hardware acceleration and edge 
+computing, suggest a future where highly accurate, real-time medical image 
+segmentation becomes increasingly accessible in clinical settings.Continued
+research and innovation will further improve segmentation accuracy and 
+accessibility.
 
 ## References
 
