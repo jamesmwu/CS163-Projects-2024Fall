@@ -95,7 +95,7 @@ Other examples include:
 
 ## Deep Learning-Based Solutions
 
-### U-Net
+## U-Net
 
 **U-Net** is a widely used convolutional neural network (CNN) architecture
 designed for image segmentation tasks. It has become a cornerstone in medical
@@ -131,10 +131,6 @@ context and fine-grained details:
      downsampling phase. This combination of upsampling and skip connections
      refines the segmentation mask, ensuring that fine-grained details and
      spatial context are preserved.
-
-![U-Net Architecture]({{ '/assets/images/group47/unet_architecture.png' | relative_url }}){:
-style="width: 400px; max-width: 100%;"} _Fig 1. U-Net Encoder-Decoder
-Architecture_
 
 #### Training Process
 
@@ -217,29 +213,65 @@ This implementation of U-Net creates the essential encoder-decoder structure of
 U-Net with skip connections. It can be expanded with various optimization
 techniques, such as adding more layers, data augmentation, and further.
 
-### U-Net++
+### Literature on U-Net
+
+The architecture of U-Net was designed to address the challenges of medical
+image segmentation, where annotated data is often scarce. Ronneberger and
+colleagues demonstrated that U-Net could achieve state-of-the-art results by
+using extensive data augmentation techniques, such as elastic deformations, to
+compensate for the lack of training samples. Their network successfully
+outperformed the prior best methods in the ISBI 2012 challenge for neuronal
+structure segmentation in electron microscopy images and won the ISBI 2015 cell
+tracking challenge for light microscopy datasets [1].
+
+Key innovations highlighted in their work include:
+
+Symmetrical Encoder-Decoder Structure: U-Net's encoder-decoder design allows it
+to capture contextual information while retaining high-resolution details
+through skip connections. This combination ensures precise localization of
+segmented regions, making it highly suitable for biomedical tasks.
+
+Data Efficiency: The network was shown to be trainable end-to-end with only a
+few annotated images, leveraging data augmentation to improve robustness to
+variations like deformations and gray-scale changes [1].
+
+Fast Inference: U-Net's efficient architecture enables the segmentation of a
+512x512 image in less than a second on a modern GPU, making it practical for
+real-world clinical applications [1].
+
+The original implementation, based on Caffe, and the trained networks were made
+publicly available, accelerating further research and adoption in the medical
+imaging community.
+
+While we only briefly extrapolated these concepts, it provided a basis of
+understanding and we highly recommend their paper for those who would like more
+details.
+
+## U-Net++
 
 **U-Net++** improves upon U-Net by introducing **dense, nested skip
-connections**:
+connections**, refining the encoder's features before they are passed to the
+decoder. Its enhanced structure leads to improved segmentation performance,
+particularly in complex medical scenarios [2].
 
 - **Feature Refinement**: Intermediate convolutional layers progressively refine
   encoder features before passing them to the decoder.
 - **Modular Design**: Easily integrates with other deep learning techniques for
   enhanced performance.
 
-![U-Net++ Architecture]({{ '/assets/images/group47/unetplusplus_architecture.png' | relative_url }}){:
-style="width: 400px; max-width: 100%;"} _Fig 2. U-Net++ with Nested Skip
-Connections_
-
 ### Multi-Dimensional U-CNN
 
-The **Multi-Dimensional U-Convolutional Neural Network** (2024) further refines
-U-Net++ by:
+The **Multi-Dimensional U-Convolutional Neural Network** further refines U-Net++
+by:
 
 - **Horizontal Refinement**: Adding convolution layers between encoder and
   decoder features to improve feature alignment.
 - **Vertical Alignment**: Feeding feature maps from each layer into the
   horizontal convolution path for enhanced feature extraction.
+
+When tested on 5 distinct datasets, each with its own unique challenges, MDU-CNN
+had a better performance of 1.32%, 5.19%, 4.50%, 10.23%, and 0.87%
+respectively-- a notable improvement upon traditional U-Net architecture [4].
 
 ### Implementation
 
@@ -298,20 +330,50 @@ class UNetPlusPlus(nn.Module):
 This basic implementation captures the nested skip connections of U-Net++, which
 refine features more effectively than the standard U-Net. The model can also be
 further expanded by adding more layers or blocks to match the full complexity of
-U-Net++.
+U-Net++. [2]
 
-Reference:
-[Srinivasan et al., 2024](https://doi.org/10.1186/s12880-024-01197-5).
+### Literature on U-Net++
+
+Zhou et al. identified two primary challenges with U-Net: the difficulty in
+determining optimal network depth and the restrictive nature of same-scale skip
+connections. To overcome these, U-Net++ introduces the following key
+innovations:
+
+Redesigned Skip Connections: Instead of direct skip connections between encoder
+and decoder layers, U-Net++ employs dense, nested skip connections. These
+connections aggregate features from varying scales, allowing more flexible and
+effective feature fusion. This design helps in retaining both high-level
+semantic information and low-level spatial details, resulting in more accurate
+segmentation maps [2].
+
+Ensemble of U-Nets: U-Net++ embeds multiple U-Nets of varying depths within a
+single architecture. These U-Nets share a common encoder but have separate
+decoders, facilitating collaborative learning through deep supervision. This
+approach mitigates the uncertainty around choosing the optimal depth for the
+network and improves segmentation quality for objects of different sizes [2].
+
+Pruning for Efficiency: To address computational efficiency, U-Net++ supports a
+pruning scheme that accelerates inference by removing redundant layers while
+maintaining performance. This feature makes U-Net++ adaptable to
+resource-constrained environments without sacrificing segmentation accuracy [2].
+
+Extensive evaluations by Zhou et al. on six medical imaging datasets, including
+CT, MRI, and electron microscopy, demonstrated that U-Net++ consistently
+outperforms the original U-Net and other baseline models. The architecture is
+particularly effective in segmenting fine structures and objects with
+significant size variations, making it a robust tool for medical image
+segmentation [2].
 
 ## nnU-Net
 
 **nnU-Net** ("no-new-U-Net") automates the process of adapting U-Net to new
-datasets, providing a robust and standardized pipeline. It streamlines the
-workflow by automatically configuring network architecture, preprocessing steps,
-and training strategies based on the characteristics of the input dataset. This
-automation minimizes the need for manual intervention and ensures that the model
-is optimized for a wide range of medical imaging tasks. nnU-Net also supports
-both 2D and 3D image segmentation, making it highly versatile.
+datasets, providing a robust and standardized pipeline [3]. By examining
+properties of the input dataset and adjusting hyperparameters and architectural
+details accordingly, nnU-Net streamlines preprocessing, architecture selection,
+training, and post-processing steps. Compared to earlier architectures, it
+removes much of the trial-and-error involved in configuring segmentation models,
+allowing for state-of-the-art results across diverse medical imaging tasks
+without manual tuning.
 
 ### Configurations
 
@@ -337,17 +399,6 @@ both 2D and 3D image segmentation, making it highly versatile.
 3. **Empirical Optimization**: Post-processing and ensembling to improve
    performance.
 4. **Validation**: Ensures model robustness and generalization.
-
-![nnU-Net Pipeline]({{ '/assets/images/group47/nnunet_pipeline.png' | relative_url }}){:
-style="width: 400px; max-width: 100%;"} _Fig 3. nnU-Net Pipeline_
-
-### Evaluation
-
-- **State-of-the-Art Performance**: nnU-Net excels in competitions like BraTS
-  and KiTS.
-- **Generalization**: Works well across diverse datasets without manual tuning.
-- **Resource Demands**: 3D configurations require significant computational
-  resources.
 
 ### Implementation
 
@@ -409,15 +460,71 @@ class nnUNet(nn.Module):
 
 ```
 
+### Literature on nnU-Net
+
+nnU-Net was introduced by Isensee et al., 2018 as a self-adapting framework
+designed to overcome the limitations of manually configuring U-Net architectures
+for different medical imaging tasks [3]. The key innovation of nnU-Net lies in
+its ability to automatically adapt network architecture, preprocessing, and
+training pipelines based on the characteristics of the input dataset. This
+automation allows nnU-Net to deliver state-of-the-art performance across a wide
+range of segmentation tasks without requiring manual adjustments or
+hyperparameter tuning.
+
+Key Contributions Automated Configuration: nnU-Net evaluates the dataset's image
+geometry and automatically selects the optimal U-Net variant (2D U-Net, 3D
+U-Net, or cascaded U-Net) along with appropriate patch sizes, pooling
+operations, and batch sizes [3]. This eliminates the need for trial-and-error
+adjustments, making the framework highly versatile and efficient.
+
+Preprocessing and Training Pipeline: The framework defines a comprehensive
+pipeline that includes cropping, resampling to a median voxel spacing, intensity
+normalization, and extensive data augmentation techniques like elastic
+deformations and gamma correction. These steps are dynamically adapted for each
+dataset to maximize segmentation performance [3].
+
+Empirical Evaluation: nnU-Net was evaluated in the Medical Segmentation
+Decathlon, a challenge comprising ten distinct medical imaging tasks. It
+achieved top rankings across multiple datasets, demonstrating its robustness and
+generalizability. Notably, nnU-Net outperformed manually optimized architectures
+by focusing on effective preprocessing, training, and inference strategies
+rather than introducing novel architectural changes [3].
+
+Ensembling and Post-Processing: To enhance robustness, nnU-Net employs model
+ensembling and test-time augmentations. Post-processing techniques, such as
+enforcing single connected components, further refine the segmentation results
+[3].
+
+This self-configuring approach positions nnU-Net as a powerful benchmark for
+medical image segmentation, capable of adapting to new challenges with minimal
+human intervention.
+
 ## Conclusion
 
 Deep learning-based medical image segmentation models like **U-Net**,
 **U-Net++**, and **nnU-Net** provide robust and efficient tools for clinical and
-research applications. Despite challenges related to dataset variability and
+research applications. They have emerged from a rich body of literature, each
+contributing key innovations: from U-Net's foundational encoder-decoder design,
+to U-Net++'s refined nested skip connections, to nnU-Net's automated,
+dataset-agnostic approach.Despite challenges related to dataset variability and
 computational resources, these models represent significant advancements in
 medical imaging. Continued research and innovation will further improve
 segmentation accuracy and accessibility.
 
 ## References
 
-[1] Redmon, Joseph, et al.
+[1]
+[Ronneberger, O., Fischer, P., & Brox, T. (2015). "U-Net: Convolutional Networks for Biomedical Image Segmentation."](https://arxiv.org/abs/1505.04597)
+_Medical Image Computing and Computer-Assisted Intervention (MICCAI)_.
+
+[2]
+[Zhou, Z., Siddiquee, M.R., Tajbakhsh, N., & Liang, J. (2020). "UNet++: Redesigning Skip Connections to Exploit Multiscale Features in Image Segmentation"](https://doi.org/10.1109/TMI.2019.2959609)
+_IEEE Transactions on Medical Imaging_.
+
+[3]
+[Isensee, F., Petersen, J., Klein, A., Zimmerer, D., Jaeger, P.F., Kohl, S.A.A., Wasserthal, J., Köhler, G., Norajitra, T., Wirkert, S., & Maier-Hein, K.H. (2018). "nnU-Net: Self-Adapting Framework for U-Net-Based Medical Image Segmentation."](https://arxiv.org/abs/1809.10486)
+arXiv.
+
+[4]
+[Srinivasan, S., et al. (2024). "A Comparison of Medical Image Segmentation Techniques."](https://doi.org/10.1186/s12880-024-01197-5)
+_BMC Medical Imaging_.
