@@ -542,6 +542,86 @@ This self-configuring approach positions nnU-Net as a powerful benchmark for
 medical image segmentation, capable of adapting to new challenges with minimal
 human intervention.
 
+### Implementation nnUNetV2 with Bounding Box Prediction for 2D Data
+
+### Overview
+
+We utilized the capabilities of the nnUNet framework by integrating **bounding box prediction** for segmenting 2D medical image data. Using a subset of the **BRATS23 dataset**, we achieved a **test IOU of 0.81**, showcasing the efficacy of nnUNet in detecting and delineating brain tumors.
+
+### Dataset Setup
+
+The dataset was organized following the nnUNet convention, with specific adjustments for bounding box annotations:
+```
+nnUNet/
+├── nnUNetFrame/
+│   ├── DATASET/
+│   │   ├── nnUNet_raw/
+│   │   │   ├── Dataset001_MEN/
+│   │   │   │   ├── imagesTr/
+│   │   │   │   │   ├── BRATS_001_0000.nii.gz
+│   │   │   │   │   ├── BRATS_001_0001.nii.gz
+│   │   │   │   │   ├── BRATS_001_0002.nii.gz
+│   │   │   │   │   ├── BRATS_001_0003.nii.gz
+│   │   │   │   │   ├──  BRATS_002_0000.nii.gz
+│   │   │   │   │   ├── BRATS_002_0001.nii.gz
+│   │   │   │   │   ├── BRATS_002_0002.nii.gz
+│   │   │   │   │   ├── BRATS_002_0003.nii.gz
+│   │   │   │   ├── labelsTr/
+│   │   │   │   │   ├── BRATS_001.nii.gz
+│   │   │   │   │   ├── BRATS_002.nii.gz
+│   │   │   │   └── imagesTs/
+│   │   │   │   └──dataset.json
+│   │   │   ├── Dataset002_MET/
+│   │   │   │   ├── imagesTr/
+│   │   │   │   ├── labelsTr/
+│   │   │   │   └── imagesTs/
+│   │   │   │   └──dataset.json
+│   │   ├── nnUNet_preprocessed/
+│   │   │   ├── Dataset001_MEN/
+│   │   │   ├── Dataset002_MET/
+│   │   │   ├── Dataset003_GLI/
+│   │   └── nnUNet_trained_models/
+│   │       ├── Dataset001_MEN/
+│   │       ├── Dataset002_MET/
+│   │       └── Dataset003_GLI/
+```
+
+The `dataset.json` was modified to include bounding box annotations:
+```json
+{
+  "channel_names": {
+    "0": "FLAIR",
+    "1": "T1w",
+    "2": "T1gd",
+    "3": "T2w"
+  },
+  "labels": {
+    "background": 0,
+    "tumor": 1
+  },
+  "bounding_boxes": true,
+  "numTraining": 32,
+  "file_ending": ".nii.gz"
+}
+```
+### Training and Results
+```bash
+nnUNetv2_train 4 2d 0 --npz
+```
+
+### Inference Pipeline
+```bash
+nnUNetv2_predict -i /path/to/test_data -o /path/to/output -tr nnUNetTrainerV2 -c 2d -p nnUNetPlans -chk checkpoint_best.pth
+```
+
+- Test IOU: 0.81
+- Hardware: NVIDIA RTX 3090 with CUDA 11.8
+- Training Duration: ~5 hours per fold
+- Evaluation Metrics:
+  - Dice Coefficient
+  - IOU (Intersection over Union)
+
+
 **Other Specification and Optimizations**
 
 1. **Patch Size Computation**: ps = min(dataset_median_shape \* 0.25,
